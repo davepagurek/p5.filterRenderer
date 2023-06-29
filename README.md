@@ -1,241 +1,34 @@
-# p5.Framebuffer
+# p5.filterRenderer
 
-A library for efficiently drawing to a texture in p5 WebGL mode, with helpers for adding blur and shadows.
-
-A Framebuffer is kind of like a `p5.Graphics`: it lets you draw to a canvas, and then treat that canvas like an image. A Framebuffer, on the other hand:
-- is **faster**: it shares the same WebGL context as the rest of the sketch, so it doesn't need to copy extra data to the GPU each frame
-- has **more information**: you can access the WebGL depth buffer as a texture, letting you do things like write focal blur shaders. This library comes with a blur helper and a contact shadow helper.
-- is **WebGL only**: this will not work in 2D mode! `p5.Graphics` should be fine for that.
+A library for p5.js WebGL mode to draw with depth blur and shadows.
 
 Read more about the motivation for this and how focal blur shaders work in <a href="https://www.davepagurek.com/blog/depth-of-field/">this blog post on the subject.</a>
 
 ![image](https://user-images.githubusercontent.com/5315059/172021218-b50f6693-40a6-49a1-99af-8dd9d73f00eb.png)
-<small><em>Above: a screenshot from [a sketch](https://openprocessing.org/sketch/1590159) using p5.Framebuffer to blur out-of-focus areas</em></small>
+<small><em>Above: a screenshot from [a sketch](https://openprocessing.org/sketch/1590159) using blurring out-of-focus areas</em></small>
 
 ## Get the library
 
-Add the library to your source code, *after* loading p5 but *before* loading your own code. If you only want the core Framebuffer library without blur and shadow renderers, load `p5.Framebuffer.core.min.js` instead of just `.min.js`.
+Add the library to your source code, *after* loading p5 but *before* loading your own code.
 
 ### Via CDN
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@davepagurek/p5.framebuffer@0.0.11/p5.Framebuffer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterRenderer@0.0.12/p5.Framebuffer.min.js"></script>
 ```
 
 On OpenProcessing, paste this link into a new library slot:
 ```
-https://cdn.jsdelivr.net/npm/@davepagurek/p5.framebuffer@0.0.11/p5.Framebuffer.min.js
+https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterRenderer@0.0.12/p5.filterRenderer.min.js
 ```
 
 ### Self-hosted
-[Download the minified or unminified source code from the releases tab](https://github.com/davepagurek/p5.Framebuffer/releases/), then add it to your HTML:
+[Download the minified or unminified source code from the releases tab](https://github.com/davepagurek/p5.filterRenderer/releases/), then add it to your HTML:
 ```html
-<script type="text/javascript" src="p5.Framebuffer.min.js"></script>
+<script type="text/javascript" src="p5.filterRenderer.min.js"></script>
 ```
 
 
 ## Usage
-
-### Base Framebuffer, as a faster canvas
-
-Create a Framebuffer in `setup` and use it in `draw`:
-
-<table>
-<tr>
-<td>
-
-```js
-let fbo
-
-function setup() {
-  createCanvas(400, 400, WEBGL)
-  fbo = createFramebuffer()
-}
-
-function draw() {
-  // Draw a box to the Framebuffer
-  fbo.draw(() => {
-    clear()
-    push()
-    noStroke()
-    fill(255, 0, 0)
-    rotateX(frameCount * 0.01)
-    rotateY(frameCount * 0.01)
-    box(150)
-    pop()
-  })
-
-  // Do something with fbo.color or dbo.depth
-  texture(fbo.depth)
-  noStroke()
-  plane(width, height)
-}
-```
-
-</td>
-<td>
-<img src="https://user-images.githubusercontent.com/5315059/178128913-a29bbfbf-a9c2-436d-9329-fbec2b5b2af9.png">
-</td>
-</tr>
-</table>
-
-Methods:
-- `p5.prototype.createFramebuffer(options?: Options)`
-  - `options.colorFormat: 'float' | 'unsigned_byte'`
-    - Specify whether to use floating point storage for the color texture
-    - Defaults to `'unsigned_byte'`
-    - Note: If you use floating point colors, in Firefox you must also call `setAttributes({ alpha: true })`
-  - `options.size: { width: number; height: number; pixelDensity: number | undefined }`
-    - Optionally specify a size and pixel density separate from the main canvas or graphic
-    - If unspecified, the Framebuffer will resize when its canvas does
-  - `options.antialias: boolean`
-    - Turn on antialiasing by passing `true`
-    - WebGL2 (the default, if available) will use multisampled antialiasing
-    - WebGL1 will render at 2x the pixel density of the canvas for pseudo-antialiasing
-
-Notes:
-- `draw()` uses the same p5 context as the rest of your sketch! Make sure to wrap your callback code in a `push()` and `pop()` to ensure your settings don't leak out into your non-Framebuffer code.
-- When you `resizeCanvas`, the Framebuffer will automatically resize accordingly. You probably will want to clear it and redraw to it if you had a texture cached.
-
-A live example: https://davepagurek.github.io/p5.Framebuffer/examples/simple
-
-### Framebuffer objects
-
-Methods:
-- `Framebuffer.prototype.resizeCanvas(width: number, height: number)`
-  - Resizes the Framebuffer to the specified size
-  - This turns off autosizing to match the canvas size
-- `Framebuffer.prototype.autoSized()`
-  - Returns whether or not the framebuffer will automatically match the canvas's size
-- `Framebuffer.prototype.autoSized(shouldAutoSize: boolean)`
-  - Sets whether or not the framebuffer should automatically match the canvas's size
-- `Framebuffer.prototype.pixelDensity()`
-  - Returns the current pixel density of the framebuffer
-- `Framebuffer.prototype.pixelDensity(targetDensity: number)`
-  - Sets the pixel density of the framebuffer
-  - This also turns off autosizing
-- `Framebuffer.prototype.defaultCamera()`
-  - Returns the camera associated with the framebuffer by default
-- `Framebuffer.prototype.createCamera()`
-  - Returns a new `p5.Camera` that matches the current dimensions of the framebuffer
-
-An example of changing the size: https://davepagurek.github.io/p5.Framebuffer/examples/sizes
-
-### WebGL 1
-
-By default, this library will use WebGL 2 instead of WebGL 1. To use WebGL 1 mode, add this to the top of your sketch:
-
-```js
-Framebuffer.forceWebGL1 = true
-```
-
-Note: Antialiasing in WebGL 1 mode works by rendering at 2x resolution instead of using a multisampled texture at 1x resolution.
-
-Compare the resulting quality using WebGL 1 vs 2 in this example: https://davepagurek.github.io/p5.Framebuffer/examples/formats
-
-### Floating point textures
-
-Sometimes, you want to write code that adds on to or modifies the previous frame. You may notice weird artifacts that show up due to the fact that colors are internally stored as integers: sometimes if you overlay a color with a very small alpha, the change in color is too small to round the resulting color up to the next integer value, so it doesn't change at all.
-
-This can be fixed if you store colors as floating point values! You can specify this in an optional options object when creating a Framebuffer object.
-
-<table>
-<tr>
-<td rowspan="4">
-
-```js
-let fboPrev, fboNext
-let canvas
-
-function setup() {
-  canvas = createCanvas(400, 400, WEBGL)
-  // There's a bug in Firefox where you can only make floating point textures
-  // if they're RGBA, and it breaks if it's just RGB
-  setAttributes({ alpha: true })
-
-  // Try changing `float` to `unsigned_byte` to see it leave a trail
-  options = { colorFormat: 'float' }
-  fboPrev = createFramebuffer(options)
-  fboNext = createFramebuffer(options)
-  imageMode(CENTER)
-  rectMode(CENTER)
-  noStroke()
-}
-
-function draw() {
-  // Swap prev and next so that we can use the previous frame as a texture
-  // when drawing the current frame
-  [fboPrev, fboNext] = [fboNext, fboPrev]
-
-  // Draw to the Framebuffer
-  fboNext.draw(() => {
-    clear()
-
-    background(255)
-
-    // Disable depth testing so that the image of the previous
-    // frame doesn't cut off the sube
-    _renderer.GL.disable(_renderer.GL.DEPTH_TEST)
-    push()
-    scale(1.003)
-    texture(fboPrev.color)
-    plane(width, -height)
-    pop()
-
-    push()
-    // Fade to white slowly. This will leave a permanent trail if you don't
-    // use floating point textures.
-    fill(255, 1)
-    rect(0, 0, width, height)
-    pop()
-    _renderer.GL.enable(_renderer.GL.DEPTH_TEST)
-
-    push()
-    normalMaterial()
-    translate(100*sin(frameCount * 0.014), 100*sin(frameCount * 0.02), 0)
-    rotateX(frameCount * 0.01)
-    rotateY(frameCount * 0.01)
-    box(50)
-    pop()
-  })
-
-  clear()
-  push()
-  texture(fboNext.color)
-  plane(width, -height)
-  pop()
-}
-```
-
-
-</td>
-<th>
-With <code>colorFormat: 'float'</code>
-</th>
-</tr>
-<tr>
-<td>
-<img src="https://user-images.githubusercontent.com/5315059/178152103-07914de2-d09f-423f-99cc-84f83c422e8b.png">
-</td>
-</tr>
-<tr>
-<th>
-With <code>colorFormat: 'unsigned_byte'</code> (the default)
-</th>
-</tr>
-<tr>
-<td>
-<img src="https://user-images.githubusercontent.com/5315059/178152105-756356b0-d741-42b6-a460-9b7b2b571f16.png">
-</td>
-</tr>
-</table>
-
-
-Methods:
-- `p5.prototype.createFramebuffer(options?: Options)`
-  - `options.colorFormat: 'float' | 'unsigned_byte'`
-    - Specify whether to use floating point storage for the color texture
-    - Defaults to `'unsigned_byte'`
-    - Note: If you use floating point colors, in Firefox you must also call `setAttributes({ alpha: true })`
 
 ### Depth of field blur
 

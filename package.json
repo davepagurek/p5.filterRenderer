@@ -1,29 +1,29 @@
 {
-  "name": "@davepagurek/p5.framebuffer",
-  "version": "0.0.11",
-  "main": "p5.Framebuffer.js",
+  "name": "@davepagurek/p5.filterRenderer",
+  "version": "0.0.12",
+  "main": "p5.filterRenderer.js",
   "author": "Dave Pagurek <dave@davepagurek.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davepagurek/p5.Framebuffer.git"
+    "url": "git+https://github.com/davepagurek/p5.filterRenderer.git"
   },
   "bugs": {
-    "url": "https://github.com/davepagurek/p5.Framebuffer/issues"
+    "url": "https://github.com/davepagurek/p5.filterRenderer/issues"
   },
-  "homepage": "https://github.com/davepagurek/p5.Framebuffer",
+  "homepage": "https://github.com/davepagurek/p5.filterRenderer",
   "dependencies": {},
   "devDependencies": {
     "minify": "^9.0.0",
     "prettier": "^2.7.1"
   },
   "scripts": {
-    "build:all": "minify Renderer.js > p5.FilterRenderer.min.js; minify BlurRenderer.js >> p5.FilterRenderer.min.js; minify GaussianBlurRenderer.js >> p5.FilterRenderer.min.js; minify ContactShadowRenderer.js >> p5.FilterRenderer.min.js",
+    "build:all": "minify Renderer.js > p5.filterRenderer.min.js; minify BlurRenderer.js >> p5.filterRenderer.min.js; minify GaussianBlurRenderer.js >> p5.filterRenderer.min.js; minify ContactShadowRenderer.js >> p5.filterRenderer.min.js",
     "build": "yarn build:all",
     "publish": "npm publish --access public"
   },
   "files": [
-    "p5.FilterRenderer.min.js",
+    "p5.filterRenderer.min.js",
     "Renderer.js",
     "BlurRenderer.js",
     "GaussianBlurRenderer.js",
