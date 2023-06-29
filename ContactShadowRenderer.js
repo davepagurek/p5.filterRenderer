@@ -124,12 +124,11 @@ class ContactShadowRenderer extends Renderer {
     })
 
     this.target.noStroke()
-    this.target.rectMode(CENTER)
     this.target.shader(this.blurShader)
     for (const key in blurUniforms) {
       this.blurShader.setUniform(key, blurUniforms[key])
     }
-    this.target.rect(0, 0, this.target.width, -this.target.height)
+    this.target.plane(this.target.width, this.target.height)
     this.target.pop()
   }
 }

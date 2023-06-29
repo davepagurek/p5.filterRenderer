@@ -28,12 +28,11 @@ class Renderer {
 
     this.target.push()
     this.target.noStroke()
-		this.target.rectMode(CENTER)
 		this.target.shader(this.shader)
     for (const key in uniforms) {
       this.shader.setUniform(key, uniforms[key])
     }
-    this.target.rect(0, 0, this.target.width, -this.target.height)
+    this.target.plane(this.target.width, this.target.height)
     this.target.pop()
   }
 

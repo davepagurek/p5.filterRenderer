@@ -31,26 +31,24 @@ class GaussianBlurRenderer extends BlurRenderer {
       this.target.push()
       this.target.clear()
       this.target.noStroke()
-      this.target.rectMode(CENTER)
       this.target.shader(this.shader)
       for (const key in uniforms) {
         this.shader.setUniform(key, uniforms[key])
       }
       this.shader.setUniform('uDirection', 0)
       this.shader.setUniform('uImg', this.fbo.color)
-      this.target.rect(0, 0, this.target.width, -this.target.height)
+      this.target.plane(this.target.width, this.target.height)
       this.target.pop()
     })
 
     this.target.noStroke()
-    this.target.rectMode(CENTER)
     this.target.shader(this.shader)
     for (const key in uniforms) {
       this.shader.setUniform(key, uniforms[key])
     }
     this.shader.setUniform('uDirection', 1)
     this.shader.setUniform('uImg', this.fbo2.color)
-    this.target.rect(0, 0, this.target.width, -this.target.height)
+    this.target.plane(this.target.width, this.target.height)
     this.target.pop()
   }
 
