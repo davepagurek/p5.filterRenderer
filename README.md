@@ -13,12 +13,12 @@ Add the library to your source code, *after* loading p5 but *before* loading you
 
 ### Via CDN
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterrenderer@0.0.12/p5.filterRenderer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterrenderer@0.0.13/p5.filterRenderer.min.js"></script>
 ```
 
 On OpenProcessing, paste this link into a new library slot:
 ```
-https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterrenderer@0.0.12/p5.filterRenderer.min.js
+https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterrenderer@0.0.13/p5.filterRenderer.min.js
 ```
 
 ### Self-hosted
