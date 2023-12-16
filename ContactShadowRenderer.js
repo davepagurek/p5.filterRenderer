@@ -119,7 +119,7 @@ class ContactShadowRenderer extends Renderer {
       for (const key in shadowUniforms) {
         this.shader.setUniform(key, shadowUniforms[key])
       }
-      this.target.rect(0, 0, this.target.width, -this.target.height)
+      this.target.rect(0, 0, this.target.width, this.target.height)
       this.target.pop()
     })
 

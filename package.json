@@ -1,6 +1,6 @@
 {
   "name": "@davepagurek/p5.filterrenderer",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "main": "p5.filterRenderer.min.js",
   "author": "Dave Pagurek <dave@davepagurek.com>",
   "license": "MIT",
