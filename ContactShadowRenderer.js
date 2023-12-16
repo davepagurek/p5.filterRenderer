@@ -13,6 +13,7 @@ class ContactShadowRenderer extends Renderer {
     this.bias = 0.1
     this.searchRadius = 100
     this.blurRadius = 50
+    this.tintColor = this.target.color(0)
   }
 
   prefix() {
@@ -39,6 +40,9 @@ class ContactShadowRenderer extends Renderer {
     return this.prefix() + ContactShadowRenderer.blurFrag
   }
 
+  setTintColor(c) {
+    this.tintColor = this.target.color(c)
+  }
   setIntensity(intensity) {
     this.intensity = intensity
   }
@@ -95,6 +99,7 @@ class ContactShadowRenderer extends Renderer {
       uFar: this.target._renderer._curCamera.cameraFar,
       uNumSamples: this.numBlurSamples,
       uBlurRadius: this.blurRadius,
+      occlusionColor: this.tintColor._array.slice(0, 3),
     }
   }
 
@@ -326,6 +331,7 @@ uniform float uFar;
 uniform float uIntensity;
 uniform int uNumSamples;
 uniform float uBlurRadius;
+uniform vec3 occlusionColor;
 
 #ifdef IS_WEBGL2
 #define texFn texture
@@ -370,7 +376,7 @@ void main() {
     total += weight;
   }
   occlusion /= total;
-  vec4 mixedColor = vec4(color.rgb * mix(1., occlusion, uIntensity), color.a);
+  vec4 mixedColor = vec4(mix(color.rgb, occlusionColor, (1. - occlusion) * uIntensity), color.a);
 #ifdef IS_WEBGL2
   outColor = mixedColor;
 #else

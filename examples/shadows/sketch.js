@@ -9,6 +9,7 @@ function setup() {
   contactShadowRenderer.setShadowSamples(10)
   contactShadowRenderer.setBlurSamples(20)
   contactShadowRenderer.setBias(0.1)
+  contactShadowRenderer.setTintColor('#111188')
 }
 
 function draw() {

@@ -13,12 +13,12 @@ Add the library to your source code, *after* loading p5 but *before* loading you
 
 ### Via CDN
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterrenderer@0.0.14/p5.filterRenderer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterrenderer@0.0.15/p5.filterRenderer.min.js"></script>
 ```
 
 On OpenProcessing, paste this link into a new library slot:
 ```
-https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterrenderer@0.0.14/p5.filterRenderer.min.js
+https://cdn.jsdelivr.net/npm/@davepagurek/p5.filterrenderer@0.0.15/p5.filterRenderer.min.js
 ```
 
 ### Self-hosted
@@ -240,6 +240,9 @@ Methods on `ContactShadowRenderer`:
   - Control how close together objects need to be for them to cast shadows
   - This is defined in *world space,* meaning all transformations are applied when checking distances
   - Defaults to 100
+- `ContactShadowRenderer.prototype.setTintColor(color)`
+  - This is the color that the original render will be mixed with when there are shadows
+  - Defaults to black
 
 A live example: https://davepagurek.github.io/p5.Framebuffer/examples/shadows
 
