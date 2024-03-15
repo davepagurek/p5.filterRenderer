@@ -28,7 +28,7 @@ class Renderer {
 
     this.target.push()
     this.target.noStroke()
-		this.target.shader(this.shader)
+    this.target.shader(this.shader)
     for (const key in uniforms) {
       this.shader.setUniform(key, uniforms[key])
     }
@@ -39,11 +39,4 @@ class Renderer {
   remove() {
     this.fbo.remove()
   }
-}
-
-const superPerspective = p5.Camera.prototype.perspective
-p5.Camera.prototype.perspective = function(fovy, aspect, near, far) {
-	this._near = near === undefined ? this.defaultCameraNear : near
-	this._far = far === undefined ? this.defaultCameraFar : far
-	superPerspective.call(this, fovy, aspect, near, far)
 }

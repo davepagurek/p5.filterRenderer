@@ -1,7 +1,7 @@
 class BlurRenderer extends Renderer {
   constructor(target, options) {
     super(target, options)
-    this.focus = (target.height / 2) / tan(PI / 6)
+    this.focus = target.height / 2 / tan(PI / 6)
     this.intensity = 0.05
     this.dof = 0
     this.numSamples = 15
@@ -42,14 +42,14 @@ class BlurRenderer extends Renderer {
       uIntensity: this.intensity,
       uDof: this.dof,
       uNumSamples: this.numSamples,
-      uNear: this.target._renderer._curCamera._near,
-      uFar: this.target._renderer._curCamera._far,
+      uNear: this.target._renderer._curCamera.cameraNear,
+      uFar: this.target._renderer._curCamera.cameraFar,
       uTargetZ: this.focus,
     }
   }
 }
 
-p5.prototype.createBlurRenderer = function(options) {
+p5.prototype.createBlurRenderer = function (options) {
   return new BlurRenderer(this, options)
 }
 
