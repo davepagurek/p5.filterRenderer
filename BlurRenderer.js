@@ -16,7 +16,8 @@ class BlurRenderer extends Renderer {
   }
 
   focusHere() {
-    const matrix = new DOMMatrix(this.target._renderer.uMVMatrix.mat4)
+    const uMVMatrix = this.target._renderer.uModelMatrix.copy().mult(_renderer.uViewMatrix)
+    const matrix = new DOMMatrix(uMVMatrix.mat4)
     const center = new DOMPoint(0, 0, 0)
     const world = center.matrixTransform(matrix)
     this.focus = -world.z
