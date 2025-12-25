@@ -36,6 +36,9 @@ class BlurRenderer extends Renderer {
   }
 
   getUniforms() {
+    const cam = this.target._renderer.states
+      ? this.target._renderer.states.curCamera
+      : this.target._Renderer._curCamera
     return {
       uImg: this.fbo.color,
       uDepth: this.fbo.depth,
@@ -43,8 +46,8 @@ class BlurRenderer extends Renderer {
       uIntensity: this.intensity,
       uDof: this.dof,
       uNumSamples: this.numSamples,
-      uNear: this.target._renderer._curCamera.cameraNear,
-      uFar: this.target._renderer._curCamera.cameraFar,
+      uNear: cam.cameraNear,
+      uFar: cam.cameraFar,
       uTargetZ: this.focus,
     }
   }

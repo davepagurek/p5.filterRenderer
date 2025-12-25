@@ -72,6 +72,9 @@ class ContactShadowRenderer extends Renderer {
       (1 - this.target._renderer.uPMatrix.mat4[2]) / this.target._renderer.uPMatrix.mat4[0],
       (1 + this.target._renderer.uPMatrix.mat4[6]) / this.target._renderer.uPMatrix.mat4[5]
     ]
+    const cam = this.target._renderer.states
+      ? this.target._renderer.states.curCamera
+      : this.target._Renderer._curCamera
 
     return {
       uImg: this.fbo.color,
@@ -79,8 +82,8 @@ class ContactShadowRenderer extends Renderer {
       uSize: [this.target.width, this.target.height],
       uIntensity: this.intensity,
       uNumSamples: this.numShadowSamples,
-      uNear: this.target._renderer._curCamera.cameraNear,
-      uFar: this.target._renderer._curCamera.cameraFar,
+      uNear: cam.cameraNear,
+      uFar: cam.cameraFar,
       uProjInfo: projInfo,
       uExponent: this.exponent,
       uBias: this.bias,
@@ -89,14 +92,17 @@ class ContactShadowRenderer extends Renderer {
   }
 
   getBlurUniforms() {
+    const cam = this.target._renderer.states
+      ? this.target._renderer.states.curCamera
+      : this.target._Renderer._curCamera
     return {
       uImg: this.fbo.color,
       uDepth: this.fbo.depth,
       uShadow: this.fbo2.color,
       uSize: [this.target.width, this.target.height],
       uIntensity: this.intensity,
-      uNear: this.target._renderer._curCamera.cameraNear,
-      uFar: this.target._renderer._curCamera.cameraFar,
+      uNear: cam.cameraNear,
+      uFar: cam.cameraFar,
       uNumSamples: this.numBlurSamples,
       uBlurRadius: this.blurRadius,
       occlusionColor: this.tintColor._array.slice(0, 3),
